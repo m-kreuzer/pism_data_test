@@ -1,0 +1,15 @@
+# go to path where extra file output is stored
+cd /p/tmp/kreuzer/coupled_PISM_MOM/experiments/pism_test_SL_-10+10m/output_pism_-100+10m_forcing
+
+# select first 10 time steps and only few variables
+ncrcat -F -d time,1,10 -v mask,thk,velsurf_mag extra_equi_16km_120000yrs.nc extra_16km.nc
+
+# open file and copy part of history to keep
+ncdump -h extra_16km|m
+
+# delete whole global history attribute
+ncatted -O -h -a history,global,d,, extra_16km.nc
+
+# create global history attribute again and write selected history from above
+ncatted -O -h -a history,global,c,c,"Tue Aug 31 19:23:43 2021: ncrcat -F -d time,1,10 -v mask,thk,velsurf_mag extra_equi_16km_120000yrs.nc extra_16km.nc\nkreuzer@cs-e14c06b02 2021-08-23 17:29:07 CEST: PISM (stable v1.1.4 committed by Constantine Khrulev on 2019-06-17 10:14:35 -0800) started on 32 procs. /p/projects/pism/kreuzer/software/pism1.1.4_extra-double/bin/pismr -i initdata/result_equi_16km_100000yrs_SL_-10m.nc -config_override initdata/config_override.nc -y 10000 -verbose 2 -options_left -o_format netcdf4_parallel -log_view -atmosphere pik -atmosphere_pik_file initdata/racmo_wessem_initmip16km_mean1986_2005.nc -surface pdd -ocean_kill_file initdata/bedmap2_initmip16km.nc -ocean pico -ocean_pico_file initdata/schmidtko_initmip16km_means.nc -sea_level constant,delta_sl_2d -ocean.delta_sl_2d.file initdata/ocean_SL_forcing.nc -extra_file output_pism/extra_equi_16km_110000yrs.nc -extra_times 100 -extra_vars mask,thk,velsurf_mag,velbase_mag,flux_mag,tillwat,tauc,pico_overturning,pico_temperature_box0,pico_salinity_box0,tillphi,shelfbmassflux,shelfbtemp,basins,bmelt,bfrict,bfrict,tendency_of_ice_amount,amount_fluxes,ice_mass,pico_contshelf_mask -ts_file output_pism/ts_equi_16km_110000yrs.nc -ts_times 100 -o output_pism/result_equi_16km_110000yrs.nc -o_size big\n\nkreuzer@cs-e14c04b10 2021-08-21 01:46:15 CEST: PISM done. Performance stats: 2.7253 wall clock hours, 87.2087 proc.-hours, 114.5914 model years per proc.-hour.\n" extra_16km.nc
+
